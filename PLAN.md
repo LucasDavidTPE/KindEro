@@ -112,17 +112,30 @@ Les dataclasses (`Config`, `Collection`, `Item`, `Attachment`, `Note`,
 | # | Tâche | Fichiers | Agent / modèle | État |
 |---|-------|----------|----------------|------|
 | 0 | Plan, contrats, squelette, `models.py`, `pyproject.toml` | PLAN.md, kindero/models.py | orchestrateur | ✅ |
-| 1 | Client API Zotero + tests | zotero.py, tests/test_zotero.py | sous-agent sonnet | ⏳ |
-| 2 | Parseur My Clippings + détection Kindle + tests | clippings.py, devices.py, tests/test_clippings.py | sous-agent sonnet | ⏳ |
-| 3 | Préparation et envoi Kindle + config + tests | kindle.py, config.py, tests/test_kindle.py, tests/test_config.py | sous-agent sonnet | ⏳ |
-| 4 | Synchro clippings → notes + tests | sync.py, tests/test_sync.py | sous-agent opus (logique la plus délicate) | ⏳ |
-| 5 | CLI | cli.py, tests/test_cli.py | orchestrateur, après 1–4 | ⏳ |
-| 6 | README (FR + EN), LICENSE GPL-3.0, CONTRIBUTING | README.md, LICENSE | sous-agent haiku | ⏳ |
-| 7 | Intégration, tests complets, relecture, commit, push | — | orchestrateur | ⏳ |
+| 1 | Client API Zotero + tests | zotero.py, tests/test_zotero.py | sous-agent sonnet | ✅ |
+| 2 | Parseur My Clippings + détection Kindle + tests | clippings.py, devices.py, tests/test_clippings.py | sous-agent sonnet | ✅ |
+| 3 | Préparation et envoi Kindle + config + tests | kindle.py, config.py, tests/test_kindle.py, tests/test_config.py | sous-agent sonnet | ✅ |
+| 4 | Synchro clippings → notes + tests | sync.py, tests/test_sync.py | sous-agent opus (logique la plus délicate) | ✅ |
+| 5 | CLI | cli.py, tests/test_cli.py | orchestrateur, après 1–4 | ✅ |
+| 6 | README (FR + EN), LICENSE GPL-3.0, CONTRIBUTING | README.md, LICENSE | sous-agent haiku | ✅ |
+| 7 | Intégration, tests complets, relecture, commit, push | — | orchestrateur | ✅ |
 
 Règles pour les sous-agents : ne toucher qu'à ses fichiers, ne pas modifier
 `models.py` ni les signatures, aucun appel réseau dans les tests, **ne pas faire
 de commit** (l'orchestrateur commit après relecture).
+
+## Points ouverts (relevés à l'intégration)
+
+- **Note modifiée à la main** : si l'utilisateur édite la note KindEro dans
+  Zotero, l'éditeur réécrit le HTML ; la synchro suivante la voit « updated » et
+  écrase ses ajouts. À faire : ne mettre à jour que si le marqueur et la liste
+  des surlignages ont changé, ou ajouter les nouveaux surlignages à la fin.
+- **Licence** : `LICENSE` vient de la copie Debian du texte FSF
+  (`/usr/share/common-licenses/GPL-3`), gnu.org étant bloqué dans
+  l'environnement de dev. Texte identique, à re-vérifier une fois si besoin.
+- **Test réel** : rien n'a encore tourné contre un vrai compte Zotero, un vrai
+  serveur SMTP ni une vraie Kindle. Première chose à faire côté utilisateur :
+  `kindero init`, puis `kindero send --dry-run`, puis `kindero import-clippings --dry-run`.
 
 ## Suite (après la v0.1)
 
@@ -138,3 +151,5 @@ de commit** (l'orchestrateur commit après relecture).
 ## Journal
 
 - 2026-10-28 — Plan rédigé, contrats figés, lancement des sous-agents 1 à 4 et 6.
+- 2026-10-28 — Tâches 1–7 terminées : 103 tests verts, test d'intégration
+  envoi → surlignage → rapprochement OK. CI GitHub Actions ajoutée.
